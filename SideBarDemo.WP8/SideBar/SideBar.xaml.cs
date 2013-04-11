@@ -170,7 +170,19 @@ namespace SideBarDemo.WP8
 
         private void GestureListener_DragStarted(object sender, DragStartedGestureEventArgs e)
         {
+            //拖曳事件和list的滑动事件会有冲突，但是似乎这句没用，斜向下滑动的时候列表还是会动
+            this.MenuList.IsHitTestVisible = false;
+        }
 
+        private void GestureListener_DragDelta(object sender, DragDeltaGestureEventArgs e)
+        {
+            this.MenuList.IsHitTestVisible = false;
+            if (uptansform.TranslateX >= 0 && uptansform.TranslateX <= 380)
+            {
+                uptansform.TranslateX += e.HorizontalChange;
+                uptansform.TranslateX = (uptansform.TranslateX < 0) ? 0 : uptansform.TranslateX;
+                uptansform.TranslateX = (uptansform.TranslateX > 380) ? 380 : uptansform.TranslateX;
+            }
         }
 
         private void GestureListener_DragCompleted(object sender, DragCompletedGestureEventArgs e)
@@ -187,16 +199,7 @@ namespace SideBarDemo.WP8
                 else
                     TranslateStory(uptansform.TranslateX, 380, TimeSpan.FromSeconds(0.3), null);
             }
-        }
-
-        private void GestureListener_DragDelta(object sender, DragDeltaGestureEventArgs e)
-        {
-            if (uptansform.TranslateX >= 0 && uptansform.TranslateX <= 380)
-            {
-                uptansform.TranslateX += e.HorizontalChange;
-                uptansform.TranslateX = (uptansform.TranslateX < 0) ? 0 : uptansform.TranslateX;
-                uptansform.TranslateX = (uptansform.TranslateX > 380) ? 380 : uptansform.TranslateX;
-            }
+            this.MenuList.IsHitTestVisible = true;
         }
     }
 }
